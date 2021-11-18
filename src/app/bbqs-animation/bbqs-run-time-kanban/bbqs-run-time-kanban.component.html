@@ -1,0 +1,4 @@
+<div class="countdown-kanban">
+  <div class="countdown-kanban-light" [class.red-light]="light === BBQS_LIGHT.RED" [class.green-light]="light === BBQS_LIGHT.GREEN "></div>
+  <div class="countdown-kanban-num">00:{{(10000-runTimeMs)/1000 | currency: '':'': '2.0'}}</div>
+</div>

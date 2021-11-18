@@ -1,0 +1,46 @@
+
+.bbqs-container
+  width: 750px
+  height: 424px
+  overflow: hidden
+  position: relative
+.bbqs-countDown
+  position: absolute
+  top: 50%
+  left: 50%
+  width: 330px
+  height: 192px
+  transform: translate(-50%, -50%)
+  background-color: #ccb188
+  border: 8px #634530 solid
+  border-bottom-style: inset
+  &::before
+    content: "●▲■"
+    color: #634530
+    position: absolute
+    transform: translateX(-50%)
+    left: 50%
+    top: 10%
+    font-size: 30px
+.bbqs-countDown-text
+  color: #634530
+  position: absolute
+  transform: translateX(-50%)
+  left: 50%
+  bottom: 0%
+  font-size: 112px
+  font-weight: bold
+
+app-bbqs-animation-countdown
+  position: absolute
+  top: 50%
+  left: 50%
+  width: 330px
+  height: 192px
+  transform: translate(-50%, -50%)
+app-bbqs-run-time-kanban
+  position: absolute
+  right: 13px
+  bottom: 243px
+  width: 143px
+  height: 97px
