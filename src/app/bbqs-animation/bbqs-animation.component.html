@@ -1,7 +1,7 @@
 <div class="bbqs-container">
   <app-bbqs-animation-scene [runTimeMs]="runTimeMs" [result]="result" [draw_num]="draw_num" (onLightChange)="handelLightChange($event)"></app-bbqs-animation-scene>
-  <app-bbqs-run-time-kanban [runTimeMs]="runTimeMs" [light]="light" *ngIf="countDown === 0"></app-bbqs-run-time-kanban>
-  <app-bbqs-animation-countdown [countDown]="countDown" *ngIf="countDown > 0"></app-bbqs-animation-countdown>
+  <app-bbqs-run-time-kanban [runTimeMs]="runTimeMs" [light]="light" *ngIf="countDownSec === 0"></app-bbqs-run-time-kanban>
+  <app-bbqs-animation-countdown [countDown]="countDownSec" *ngIf="countDownSec > 0"></app-bbqs-animation-countdown>
 </div>
 <button (click)="runCountDown()">countDown</button>
 <button (click)="run(-1000)">run-</button>

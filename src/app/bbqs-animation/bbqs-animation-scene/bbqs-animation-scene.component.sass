@@ -2,13 +2,13 @@
   position: absolute
   top: 0px
   opacity: 0.9
-  background-image: url('^assets/bg-base.png')
+  background-image: url('^assets/game/BBQS/bg-base.png')
   background-repeat: no-repeat
 .bg
   position: relative
   width: 750px
   height: 424px
-  background-image: url('^assets/bg.png')
+  background-image: url('^assets/game/BBQS/bg.png')
   background-size: contain
   transform-origin: center 160px
   transition: 1s
@@ -16,48 +16,91 @@
 
 .men
   position: absolute
-  width: 63px
-  height: 99px
-  background-image: url('^assets/man.png')
-  background-size: contain
+  width: 122px
+  height: 142px
   transition: 1s
   backface-visibility: hidden
   transition-timing-function: linear
-  bottom: 20px
+  bottom: -1px
 
-  &.is-die::after
-    content: 'X'
+@for $i from 0 through 7
+  .men-no-#{$i+1}
+    left: #{47 + $i*77.75}px
+    @if $i < 4
+      .men-num
+        color: #2754A3
+      .men-body
+        &::after
+          background-image: url('^assets/game/BBQS/body/ready_top_boy.png'), url('^assets/game/BBQS/body/run_00000.png'), url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+    @else
+      .men-num
+        color: #E6324D
+      .men-body
+        &::after
+          background-image: url('^assets/game/BBQS/body/ready_top_girl.png'), url('^assets/game/BBQS/body/run_00000.png'), url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+
+.men-layout
+  display: block
+  width: 100%
+  height: 100%
+  &.is-die
+    animation: people-die .1s ease-in-out 1
+    .is-kill
+      animation: show-kill .1s linear 1 forwards 0.15s
+  .men-body
+    width: 100%
+    height: 100%
+    display: block
+  .men-num
+    width: 18px
+    height: 17px
+    position: absolute
+    top: 49%
+    left: 42%
+    display: flex
+    align-items: center
+    justify-content: center
+    font-weight: bold
+  .is-kill
     color: red
     width: 18px
     height: 17px
     position: absolute
     top: 44%
     left: 40%
-
-@for $i from 0 through 7
-  .men-no-#{$i+1}
-    left: #{54 + $i*79}px
-    &::before
-      content: '#{$i+1}'
-      background-color: white
-      width: 18px
-      height: 17px
-      position: absolute
-      top: 46%
-      left: 35%
-      display: flex
-      align-items: center
-      justify-content: center
+    opacity: 0
 
 
-// @keyframes people-die
-//   10%, 90%
-//     transform: translate3d(0, -1px, 0)
-//   20%, 80%
-//     transform: translate3d(0, 2px, 0)
-//   30%, 70%
-//     transform: translate3d(0, -4px, 0)
-//   40%, 60%
-//     transform: translate3d(0, -4px, 0)
-//   50%
-//     transform: translate3d(0, -4px, 0)
+@keyframes people-die
+  10%, 90%
+    transform: translate3d(-1px, -1px, -1px)
+  20%, 80%
+    transform: translate3d(2px, 2px, 2px)
+  30%, 70%
+    transform: translate3d(-4px, -4px, -4px)
+  40%, 60%
+    transform: translate3d(-4px, -4px, -4px)
+  50%
+    transform: translate3d(-4px, -4px, -4px)
+
+@keyframes show-kill
+  0%
+    opacity: 0
+  100%
+    opacity: 1
+
+
+.rank-bar
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 60px
+
+
+.men-body
+  &::after, &::before
+    content: ' '
+    width: 100%
+    height: 100%
+    position: absolute

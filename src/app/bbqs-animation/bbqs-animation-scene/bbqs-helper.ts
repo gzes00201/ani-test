@@ -59,8 +59,8 @@ export function BgAnimationConfigFactory(bgConfig: BBQSAnimationPositionConfig, 
   return bgConfigKeyframe
 }
 
-
-export function BBQSRoundSortByNum(realRankNo: number[], dieRankNo: number[], num: string): number[] {
+// 遊戲特殊邏輯亂數排序
+export function BBQSGameRoundSortByNum(realRankNo: number[], dieRankNo: number[], num: string): number[] {
   if (dieRankNo.length  === 0) {
     // 全部存活 第一輪合全亂數
     return sortArrWithSeed(realRankNo, num)
@@ -86,7 +86,7 @@ export function BBQSRoundSortByNum(realRankNo: number[], dieRankNo: number[], nu
     return liveRank.map(item=> item)
   }
 }
-
+// 一般亂數排序邏輯
 export function sortArrWithSeed(arr: number[], seedNum: string): number[]{
   let seed = MD5(seedNum)
 

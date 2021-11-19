@@ -1,33 +1,35 @@
 .countdown-kanban
-  background: #2d2d2d
+  background-image: url('^assets/game/BBQS/pedestrian_lights_bg.png')
   color: white
   width: 100%
   height: 100%
-  border-radius: 7px
-  opacity: 1
 .countdown-kanban-light
   width: 91%
   height: 27%
   position: absolute
   top: 8%
   left: 4%
-  border: 4px #151a1d solid
-  border-radius: 5px
   box-sizing: border-box
   &.red-light::before
     content: ' '
     width: 50%
     height: 100%
-    background-color: red
     position: absolute
     left: 0
+    background-image: url('^assets/game/BBQS/pedestrian_lights_stop.png')
+    background-size: auto
+    background-position-y: -4px
+    background-position-x: -5px
   &.green-light::before
     content: ' '
     width: 50%
     height: 100%
-    background-color: green
     right: 0
     position: absolute
+    background-image: url('^assets/game/BBQS/pedestrian_lights_go.png')
+    background-size: auto
+    background-position-y: -4px
+    background-position-x: -5px
 .countdown-kanban-num
   width: 91%
   height: 57%
@@ -40,5 +42,5 @@
   display: flex
   align-items: center
   justify-content: center
-  font-size: 46px
+  font-size: 40px
   font-weight: bold

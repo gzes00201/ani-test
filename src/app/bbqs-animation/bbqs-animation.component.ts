@@ -31,19 +31,24 @@ export interface BBQSResult {
   styleUrls: ['./bbqs-animation.component.sass']
 })
 export class BbqsAnimationComponent implements OnInit {
-  countDown = 0
-  runTimeMs = 3000
-  result: BBQSResult = {"01":1,"02":2,"03":3,"04":4,"05":5,"06":6,"07":7,"08":8,"09":5}
+  countDownSec = 0
+  runTimeMs = 0
+  result: BBQSResult = {"01":2,"02":4,"03":7,"04":6,"05":1,"06":5,"07":8,"08":3,"09":6}
   light: BBQS_LIGHT = BBQS_LIGHT.GREEN
   draw_num = '202111110002'
   constructor() { }
 
   ngOnInit(): void {
-
+    // this.runCountDown();
   }
 
   runCountDown() {
-    this.countDown--
+    console.log(this.countDownSec)
+    interval(1000).pipe(take(3)).subscribe(()=>{
+      this.countDownSec--
+      console.log(this.countDownSec)
+    });
+
   }
 
   run(ms: number) {
@@ -62,7 +67,7 @@ export class BbqsAnimationComponent implements OnInit {
     })
   }
   reset() {
-    this.countDown = 0
+    this.countDownSec = 0
     this.runTimeMs = 0
   }
 }

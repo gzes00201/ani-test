@@ -1,13 +1,17 @@
 <div class="bg" [style.transform]="'scale('+ bgAni.currentKeyFrame.scale">
   <div class="men"
         *ngFor="let people of peoples; let index = index"
-        [class.is-die]="people.status === BBQSPeopleState.DIE"
         [ngClass]="'men-no-'+(index+1)"
         [ngStyle]="{
           transform: 'translate('+ people.currentKeyFrame.translateX +'px, '+ people.currentKeyFrame.translateY +'px) scale('+ people.currentKeyFrame.scale +') translateZ(0)',
           transition: 'all '+ (iskeyframes ? people.rank/(8-dieRankNo.length) : 1) +'s linear 0s'
         }" >
+        <div class="men-layout" [class.is-die]="people.status === BBQSPeopleState.DIE">
+          <span class="men-body"></span>
+          <span class="men-num">{{index+1}}</span>
+          <span class="is-kill">X</span>
+        </div>
   </div>
 </div>
-
+<div class="rank-bar">{{currentRankNo | json}}</div>
 

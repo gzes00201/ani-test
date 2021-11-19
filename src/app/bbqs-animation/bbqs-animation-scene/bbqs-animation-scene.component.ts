@@ -2,9 +2,11 @@ import { BBQSBackground } from './bbqs-background';
 import { Component, Input, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
 
 import { BBQSResult, BBQSResultKey } from '../bbqs-animation.component';
-import { BBQSRoundSortByNum, BgAnimationConfigFactory, getKillTimes, PeopleAnimationConfigFactory, sortArrWithSeed } from './bbqs-helper';
+import { BBQSGameRoundSortByNum, BgAnimationConfigFactory, getKillTimes, PeopleAnimationConfigFactory, sortArrWithSeed } from './bbqs-helper';
 import { BBQSPeople, BBQSPeopleState } from './bbqs-people';
 import { BBQS_Animation_Config, AnimationKeyframe, BBQS_LIGHT } from './config/bbqs-animation-config';
+import { delay, interval, of, takeUntil } from 'rxjs';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-bbqs-animation-scene',
@@ -28,6 +30,8 @@ export class BbqsAnimationSceneComponent implements OnInit {
   public iskeyframes = false;
   public realRankNo: number[] = [];
   public dieRankNo: number[] = [];
+  public currentRankNo: number[] = [];
+
   private light: BBQS_LIGHT = BBQS_LIGHT.GREEN;
 
   constructor() {
@@ -65,11 +69,11 @@ export class BbqsAnimationSceneComponent implements OnInit {
 
   private handelRunTimeMs(runTimeMs: number) {
     this.iskeyframes = Math.round(runTimeMs/1000) === 10;
-
     this.bgAni.tickRunTime(runTimeMs);
     this.handelLightChange(runTimeMs)
     this.handelPeoplesRank(runTimeMs);
     this.updatePeoplesRunTime(runTimeMs);
+
   }
 
   handelPeoplesRank(runTimeMs: number) {
@@ -78,9 +82,9 @@ export class BbqsAnimationSceneComponent implements OnInit {
     }
 
     if(runTimeMs === 10000){
-      this.handelPeopleRoundRank(this.realRankNo);
+      this.handelPlayRealRank();
     } else {
-      this.handelRoundSoryByNum(this.draw_num+ String(runTimeMs));
+      this.handelPlayRoundRankByNum(this.draw_num+ String(runTimeMs));
     }
   }
 
@@ -96,7 +100,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
   }
 
   updatePeoplesRunTime(runTimeMs: number) {
-    if(this.killTimes.includes(runTimeMs)){
+    if(this.killTimes[0]===(runTimeMs)){
       this.handelPeopleDie(this.dieRankNo);
     }
 
@@ -107,12 +111,18 @@ export class BbqsAnimationSceneComponent implements OnInit {
         people.tickRunTime(runTimeMs);
       }
     })
+
+    if(runTimeMs === 0){
+      this.currentRankNo = [1,2,3,4,5,6,7];
+    }
   }
 
   resetAni(result: BBQSResult) {
     this.bgAni.reset();
     this.handelRankConfig(result);
     this.updatePeoplesRunTime(0);
+
+    console.log('done')
   }
 
   private handelRankConfig(result: BBQSResult) {
@@ -129,18 +139,42 @@ export class BbqsAnimationSceneComponent implements OnInit {
     this.dieRankNo = this.realRankNo.slice(this.realRankNo.length - result[BBQSResultKey.DIECOUNT] ,this.realRankNo.length)
   }
 
-  private handelRoundSoryByNum(num: string) {
-    const firstRoundSortByNum = BBQSRoundSortByNum(this.realRankNo, this.dieRankNo, num)
-    this.handelPeopleRoundRank(firstRoundSortByNum);
+  private handelPlayRealRank() {
+    this.handelPeopleRoundRank(this.realRankNo);
+  }
+
+  private handelPlayRoundRankByNum(num: string) {
+    var displayRankNo = []
+    if(this.config.stopTime.includes(this.runTimeMs)){
+      displayRankNo = BBQSGameRoundSortByNum(this.realRankNo, this.dieRankNo, num)
+    } else {
+      displayRankNo = sortArrWithSeed(this.realRankNo, num )
+    }
+    this.handelPeopleRoundRank(displayRankNo);
+
+    // 當已殺完人 已死人員停在原地 顯示的當下排序要特別計算
+    if(this.runTimeMs > this.config.stopTime[0]) {
+      // 顯示用排序 濾掉死亡排序  之後串接就是真正的排序
+      this.currentRankNo = displayRankNo.filter(no=> !this.dieRankNo.includes(no))
+                                        .concat(this.dieRankNo)
+    }else {
+      this.currentRankNo = displayRankNo;
+    }
   }
 
   private handelPeopleDie(dieRankNo: number[]) {
-    dieRankNo.forEach((no: number, _) => {
-      let currentPeople = this.getPeopleFromNo(no);
+    const roundSortDieRank = sortArrWithSeed(dieRankNo, this.draw_num);
+
+    // 依序殺死玩家
+    interval(250).pipe(
+      take(roundSortDieRank.length)
+    ).subscribe((ind)=>{
+      let currentPeople = this.getPeopleFromNo(roundSortDieRank[ind]);
       if(currentPeople) {
         currentPeople.setStatus(BBQSPeopleState.DIE);
       }
-    });
+    })
+
   }
 
   private handelPeopleRoundRank(roundSort: number[]) {
