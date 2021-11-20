@@ -1,9 +1,3 @@
-.bg.bg-demo
-  position: absolute
-  top: 0px
-  opacity: 0.9
-  background-image: url('^assets/game/BBQS/bg-base.png')
-  background-repeat: no-repeat
 .bg
   position: relative
   width: 750px
@@ -22,35 +16,67 @@
   backface-visibility: hidden
   transition-timing-function: linear
   bottom: -1px
-
+  overflow: hidden
 @for $i from 0 through 7
   .men-no-#{$i+1}
     left: #{47 + $i*77.75}px
+    &.is-run
+      .men-body::after, .men-body::before, .men-body-run::before
+        opacity: 0
+      .men-body-run::after
+        opacity: 1
+        animation: people-running 1s steps(11, start)  infinite
+      .men-body-run::before
+        opacity: 1
     @if $i < 4
       .men-num
         color: #2754A3
       .men-body
+        &::before
+          background-image: url('^assets/game/BBQS/body/run_00000.png')
         &::after
-          background-image: url('^assets/game/BBQS/body/ready_top_boy.png'), url('^assets/game/BBQS/body/run_00000.png'), url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+          background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png'), url('^assets/game/BBQS/body/ready_top_boy.png')
+      .men-body-run
+        &::after
+          background-image: url('^assets/game/BBQS/run_boy.png')
+        &::before
+          background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
     @else
       .men-num
         color: #E6324D
       .men-body
+        &::before
+          background-image: url('^assets/game/BBQS/body/run_00000.png')
         &::after
-          background-image: url('^assets/game/BBQS/body/ready_top_girl.png'), url('^assets/game/BBQS/body/run_00000.png'), url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
-
+          background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png'), url('^assets/game/BBQS/body/ready_top_girl.png')
+      .men-body-run
+        &::after
+          background-image: url('^assets/game/BBQS/run_girl.png')
+        &::before
+          background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
 .men-layout
   display: block
   width: 100%
   height: 100%
   &.is-die
     animation: people-die .1s ease-in-out 1
+    .men-body::after
+      animation: hide-ani .1s ease-in-out 1 forwards .25s
+    .men-num
+      animation: hide-ani .1s ease-in-out 1 forwards .25s
     .is-kill
-      animation: show-kill .1s linear 1 forwards 0.15s
-  .men-body
+      animation: show-kill .1s linear 1 forwards 0.1s
+      &::before
+        animation: show-kill .1s linear 1 forwards 0.1s
+      &::after
+        animation: shooting .1s steps(6, start)  1 forwards 0.2s
+  .men-body, .men-body-run
     width: 100%
     height: 100%
     display: block
+    position: absolute
+    top: 0
+    left: 0
   .men-num
     width: 18px
     height: 17px
@@ -62,26 +88,30 @@
     justify-content: center
     font-weight: bold
   .is-kill
-    color: red
-    width: 18px
-    height: 17px
-    position: absolute
-    top: 44%
-    left: 40%
+    width: 100%
+    height: 100%
     opacity: 0
-
-
+    display: block
+    overflow: hidden
+    &::before
+      content: ''
+      background-image: url('^assets/game/BBQS/out_mask.png')
+      width: 100%
+      height: 100%
+      display: block
+      position: absolute
+    &::after
+      content: ''
+      background-image: url('^assets/game/BBQS/shoot.png')
+      width: 100%
+      height: 816px
+      display: block
+      position: absolute
 @keyframes people-die
-  10%, 90%
-    transform: translate3d(-1px, -1px, -1px)
-  20%, 80%
-    transform: translate3d(2px, 2px, 2px)
-  30%, 70%
-    transform: translate3d(-4px, -4px, -4px)
-  40%, 60%
-    transform: translate3d(-4px, -4px, -4px)
-  50%
-    transform: translate3d(-4px, -4px, -4px)
+  0%
+    transform: rotate(-10deg)
+  100%
+    transform: rotate(0deg)
 
 @keyframes show-kill
   0%
@@ -89,6 +119,11 @@
   100%
     opacity: 1
 
+@keyframes hide-ani
+  0%
+    opacity: 1
+  100%
+    opacity: 0
 
 .rank-bar
   position: absolute
@@ -98,9 +133,32 @@
   height: 60px
 
 
-.men-body
+.men-body, .men-body-run
   &::after, &::before
     content: ' '
     width: 100%
     height: 100%
     position: absolute
+
+.men-body-run
+  overflow: hidden
+  &::after
+    content: ' '
+    height: 1704px
+    width: 100%
+    position: absolute
+.men-body-run
+  &::after, &::before
+    opacity: 0
+
+@keyframes people-running
+  0%
+    transform: translateY(0)
+  100%
+    transform: translateY(-1562px)
+
+@keyframes shooting
+  0%
+    transform: translateY(0)
+  100%
+    transform: translateY(-816px)

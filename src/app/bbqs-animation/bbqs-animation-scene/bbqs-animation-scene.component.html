@@ -1,17 +1,21 @@
-<div class="bg" [style.transform]="'scale('+ bgAni.currentKeyFrame.scale">
+<div class="bg" [style.transform]="'translateY('+(bgAni.currentKeyFrame.translateY)+'px) scale('+ bgAni.currentKeyFrame.scale">
   <div class="men"
         *ngFor="let people of peoples; let index = index"
         [ngClass]="'men-no-'+(index+1)"
+        [class.is-run]="runTimeMs>0 && light === BBQS_LIGHT.GREEN && people.status === BBQSPeopleState.LIVE"
+        [class.is-stop]="runTimeMs===0 || light === BBQS_LIGHT.RED"
         [ngStyle]="{
           transform: 'translate('+ people.currentKeyFrame.translateX +'px, '+ people.currentKeyFrame.translateY +'px) scale('+ people.currentKeyFrame.scale +') translateZ(0)',
-          transition: 'all '+ (iskeyframes ? people.rank/(8-dieRankNo.length) : 1) +'s linear 0s'
+          transition: 'all '+ (iskeyframes ? ((1/(8-dieRankNo.length) * people.rank)) : 1) +'s linear 0s'
         }" >
-        <div class="men-layout" [class.is-die]="people.status === BBQSPeopleState.DIE">
+        <div class="men-layout"
+          [class.is-die]="people.status === BBQSPeopleState.DIE">
           <span class="men-body"></span>
+          <span class="men-body-run"></span>
           <span class="men-num">{{index+1}}</span>
-          <span class="is-kill">X</span>
+          <span class="is-kill"></span>
         </div>
+
   </div>
 </div>
-<div class="rank-bar">{{currentRankNo | json}}</div>
 

@@ -7,6 +7,8 @@ import { BbqsAnimationSceneComponent } from './bbqs-animation/bbqs-animation-sce
 import { BbqsAnimationComponent } from './bbqs-animation/bbqs-animation.component';
 import { BbqsAnimationCountdownComponent } from './bbqs-animation/bbqs-animation-countdown/bbqs-animation-countdown.component';
 import { BbqsRunTimeKanbanComponent } from './bbqs-animation/bbqs-run-time-kanban/bbqs-run-time-kanban.component';
+import { BbqsRankMapComponent } from './bbqs-animation/bbqs-rank-map/bbqs-rank-map.component';
+import { BbqsCurrentRankComponent } from './bbqs-animation/bbqs-current-rank/bbqs-current-rank.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +16,9 @@ import { BbqsRunTimeKanbanComponent } from './bbqs-animation/bbqs-run-time-kanba
     BbqsAnimationSceneComponent,
     BbqsAnimationComponent,
     BbqsAnimationCountdownComponent,
-    BbqsRunTimeKanbanComponent
+    BbqsRunTimeKanbanComponent,
+    BbqsRankMapComponent,
+    BbqsCurrentRankComponent
   ],
   imports: [
     BrowserModule,

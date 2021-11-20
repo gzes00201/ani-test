@@ -5,7 +5,7 @@ import { BBQSResult, BBQSResultKey } from '../bbqs-animation.component';
 import { BBQSGameRoundSortByNum, BgAnimationConfigFactory, getKillTimes, PeopleAnimationConfigFactory, sortArrWithSeed } from './bbqs-helper';
 import { BBQSPeople, BBQSPeopleState } from './bbqs-people';
 import { BBQS_Animation_Config, AnimationKeyframe, BBQS_LIGHT } from './config/bbqs-animation-config';
-import { delay, interval, of, takeUntil } from 'rxjs';
+import { interval } from 'rxjs';
 import { take } from 'rxjs';
 
 @Component({
@@ -18,6 +18,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
   @Input() runTimeMs: number = 0;
   @Input() result?: BBQSResult;
   @Output() onLightChange =  new EventEmitter<BBQS_LIGHT>();
+  @Output() onPeoplesRankChange =  new EventEmitter<BBQSPeople[]>();
 
   public BBQSPeopleState = BBQSPeopleState
   private config = BBQS_Animation_Config;
@@ -32,8 +33,8 @@ export class BbqsAnimationSceneComponent implements OnInit {
   public dieRankNo: number[] = [];
   public currentRankNo: number[] = [];
 
-  private light: BBQS_LIGHT = BBQS_LIGHT.GREEN;
-
+  light: BBQS_LIGHT = BBQS_LIGHT.GREEN;
+  BBQS_LIGHT = BBQS_LIGHT
   constructor() {
     this.initConfig()
    }
@@ -68,6 +69,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
   }
 
   private handelRunTimeMs(runTimeMs: number) {
+    console.log('handelRunTimeMs', runTimeMs)
     this.iskeyframes = Math.round(runTimeMs/1000) === 10;
     this.bgAni.tickRunTime(runTimeMs);
     this.handelLightChange(runTimeMs)
@@ -113,7 +115,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
     })
 
     if(runTimeMs === 0){
-      this.currentRankNo = [1,2,3,4,5,6,7];
+      this.resetCurrentRank();
     }
   }
 
@@ -141,6 +143,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
 
   private handelPlayRealRank() {
     this.handelPeopleRoundRank(this.realRankNo);
+    this.setCurrentRank(this.realRankNo);
   }
 
   private handelPlayRoundRankByNum(num: string) {
@@ -155,11 +158,24 @@ export class BbqsAnimationSceneComponent implements OnInit {
     // 當已殺完人 已死人員停在原地 顯示的當下排序要特別計算
     if(this.runTimeMs > this.config.stopTime[0]) {
       // 顯示用排序 濾掉死亡排序  之後串接就是真正的排序
-      this.currentRankNo = displayRankNo.filter(no=> !this.dieRankNo.includes(no))
-                                        .concat(this.dieRankNo)
+      this.setCurrentRank(displayRankNo.filter(no=> !this.dieRankNo.includes(no))
+      .concat(this.dieRankNo));
     }else {
-      this.currentRankNo = displayRankNo;
+      this.setCurrentRank(displayRankNo);
     }
+  }
+
+  private setCurrentRank(newRank: number[]) {
+    this.currentRankNo = newRank;
+    let newPeopleRanks: BBQSPeople[]  = []
+
+    this.currentRankNo.forEach(no=>{
+      let cuurent = this.getPeopleFromNo(no)
+      if(cuurent){
+        newPeopleRanks.push(cuurent)
+      }
+    })
+    this.onPeoplesRankChange.emit(newPeopleRanks);
   }
 
   private handelPeopleDie(dieRankNo: number[]) {
@@ -184,6 +200,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
         currentPeople.setRankOffset(rankIndex+1);
       }
     });
+
   }
 
   private getPeopleFromNo(no: number): BBQSPeople | undefined{
@@ -202,7 +219,13 @@ export class BbqsAnimationSceneComponent implements OnInit {
       this.peoples.push(new BBQSPeople(index+1, config , this.config.stopTime))
     })
 
+    this.resetCurrentRank();
+
     this.bgKeyframes = BgAnimationConfigFactory(this.config.bg, this.config.stopTime)
     this.killTimes = getKillTimes(this.config.stopTime);
+  }
+
+  private resetCurrentRank(){
+    this.setCurrentRank([1,2,3,4,5,6,7]);
   }
 }

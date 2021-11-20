@@ -55,20 +55,22 @@ export class BBQSPeople {
   private handelRun(ms: number): void {
     const keyframesIndex = Math.round(ms/1000);
     let currentKeyFrame = this._keyframes[keyframesIndex];
+
     let newKeyFrame = new AnimationKeyframe(currentKeyFrame.duration, currentKeyFrame.translateX, currentKeyFrame.translateY, currentKeyFrame.scale);
 
     // 開頭結束 都是同樣位子
-    if(ms !== 0 && ms !== 10000){
+    if(ms !== 0 && ms !== 10000 ){
       newKeyFrame.translateX = newKeyFrame.translateX + this.getOffsetByRank(this._rankOffset.translateX)  ;
       newKeyFrame.translateY = newKeyFrame.translateY +  this.getOffsetByRank(this._rankOffset.translateY)  ;
-      newKeyFrame.scale = newKeyFrame.scale +  this.getOffsetByRank(this._rankOffset.scale)  ;
+      newKeyFrame.scale = newKeyFrame.scale -  this.getOffsetByRank(this._rankOffset.scale)  ;
+
     }
 
     this._currentKeyFrame  = newKeyFrame
   }
 
   private getOffsetByRank(offset: number): number {
-    return offset * this._rankPercent[this.rank-1]
+    return offset * this._rankPercent[this.rank-1] * 0.5
   }
 
   public setStatus(status: BBQSPeopleState) {
@@ -81,6 +83,7 @@ export class BBQSPeople {
 
   private setBaseKeyframes(config: BBQSAnimationPositionConfig, stopTime: number[]) {
     this._keyframes = PeopleAnimationConfigFactory(config, stopTime);
+    console.log(this._keyframes )
     this._rankOffset = PeopleRankOffsetConfigFactory(config, stopTime);
   }
 }

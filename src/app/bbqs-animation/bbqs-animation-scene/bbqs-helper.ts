@@ -47,7 +47,7 @@ export function BgAnimationConfigFactory(bgConfig: BBQSAnimationPositionConfig, 
   let bgConfigKeyframe =  PeopleAnimationConfigFactory(bgConfig, stopTime)
   // 設定偏差值 調整動畫順暢度
   bgConfigKeyframe[1].scale -= 0.1875
-  bgConfigKeyframe[2].scale -= 0.3
+  bgConfigKeyframe[2].scale -= 0.31
   bgConfigKeyframe[3].scale -= 0.4
   // 停止
   bgConfigKeyframe[4].scale = bgConfigKeyframe[3].scale
@@ -55,7 +55,9 @@ export function BgAnimationConfigFactory(bgConfig: BBQSAnimationPositionConfig, 
 
   bgConfigKeyframe[6].scale -= 0.4
   bgConfigKeyframe[7].scale -= 0.3
-
+  bgConfigKeyframe[8].scale -= 0.2
+  bgConfigKeyframe[9].scale -= 0.1
+  console.log(bgConfigKeyframe)
   return bgConfigKeyframe
 }
 

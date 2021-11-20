@@ -1,0 +1,6 @@
+<div class="rank-map-wapper">
+  <div class="state_doll"></div>
+  <div *ngFor="let people of currentPeopleRank" class="people-item" [ngClass]="'people-item-no-'+people.no">
+    <span class="no">{{people.no}}</span>
+  </div>
+</div>

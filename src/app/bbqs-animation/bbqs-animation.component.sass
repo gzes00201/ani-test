@@ -44,3 +44,42 @@ app-bbqs-run-time-kanban
   bottom: 239px
   width: 142px
   height: 96px
+app-bbqs-rank-map
+  position: absolute
+  right: 15px
+  bottom: 13px
+  width: 142px
+  height: 220px
+
+.origin-bbqs-wapper
+  background-image: url('^assets/game/BBQS/result_bg.png')
+  width: 750px
+  height: 424px
+  position: absolute
+  top: 0
+  pointer-events: none
+
+.bbqs-game-info
+  width: 150px
+  height: 42px
+  position: absolute
+  left: 20px
+  top: 20px
+  color: #FFFFFF
+  font-size: 16px
+  font-weight: bold
+  .bbqs-game-info-title::after
+    content: ' '
+    width: 39px
+    height: 12px
+    background-image: url('^assets/game/BBQS/result_icon.png')
+    display: inline-block
+    margin-left: 4px
+
+app-bbqs-current-rank
+  width: 385px
+  height: 62px
+  position: absolute
+  left: 50%
+  transform: translateX(-50%)
+  top: 8px

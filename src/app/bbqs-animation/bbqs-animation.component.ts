@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { interval, take } from 'rxjs';
+import { BBQSPeople } from './bbqs-animation-scene/bbqs-people';
 import { BBQS_LIGHT } from './bbqs-animation-scene/config/bbqs-animation-config';
 export enum BBQSResultKey {
   RANK1 = '01',
@@ -31,11 +32,14 @@ export interface BBQSResult {
   styleUrls: ['./bbqs-animation.component.sass']
 })
 export class BbqsAnimationComponent implements OnInit {
-  countDownSec = 0
+  countDownSec = 3
   runTimeMs = 0
-  result: BBQSResult = {"01":2,"02":4,"03":7,"04":6,"05":1,"06":5,"07":8,"08":3,"09":6}
+  result: BBQSResult = {"01":2,"02":4,"03":7,"04":6,"05":1,"06":5,"07":8,"08":3,"09":3}
   light: BBQS_LIGHT = BBQS_LIGHT.GREEN
-  draw_num = '202111110002'
+  draw_num = '202111110002';
+  currentPeopleRank: BBQSPeople[] = [];
+  @Input() displayOriginWapper = true;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -47,6 +51,8 @@ export class BbqsAnimationComponent implements OnInit {
     interval(1000).pipe(take(3)).subscribe(()=>{
       this.countDownSec--
       console.log(this.countDownSec)
+    },()=>{}, ()=>{
+      this.autoRun()
     });
 
   }
@@ -58,6 +64,11 @@ export class BbqsAnimationComponent implements OnInit {
   handelLightChange(light: BBQS_LIGHT){
     this.light = light;
   }
+
+  handelPeopleRankChange(peoples: BBQSPeople[]) {
+    this.currentPeopleRank = peoples;
+  }
+
   autoRun() {
     this.runTimeMs = 0
     interval(1000).pipe(
