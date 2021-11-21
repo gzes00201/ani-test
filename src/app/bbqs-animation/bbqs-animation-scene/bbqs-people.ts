@@ -70,7 +70,7 @@ export class BBQSPeople {
   }
 
   private getOffsetByRank(offset: number): number {
-    return offset * this._rankPercent[this.rank-1] * 0.5
+    return offset * this._rankPercent[this.rank-1] 
   }
 
   public setStatus(status: BBQSPeopleState) {

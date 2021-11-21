@@ -17,17 +17,25 @@
   transition-timing-function: linear
   bottom: -1px
   overflow: hidden
+  &.is-run
+    @for $i from 1 through 8
+      .men-layout.speed-#{$i} 
+        animation: people-jitter #{ 0.2+(0.1*$i)/2  }s steps(11, start)  infinite
+        .men-body-run::after
+          animation: people-running #{ 0.2+(0.1*$i)  }s steps(11, start)  infinite
+        
+    .men-body::after, .men-body::before, .men-body-run::before
+      opacity: 0
+    .men-body-run
+      &::after
+        opacity: 1
+    
+    .men-body-run::before
+      opacity: 1
+  
 @for $i from 0 through 7
   .men-no-#{$i+1}
     left: #{47 + $i*77.75}px
-    &.is-run
-      .men-body::after, .men-body::before, .men-body-run::before
-        opacity: 0
-      .men-body-run::after
-        opacity: 1
-        animation: people-running 1s steps(11, start)  infinite
-      .men-body-run::before
-        opacity: 1
     @if $i < 4
       .men-num
         color: #2754A3
@@ -157,6 +165,15 @@
   100%
     transform: translateY(-1562px)
 
+@keyframes people-jitter
+  0%
+    transform: translate(0px, 0px)
+  25%
+    transform: translate(1px, -1px)
+  50%
+    transform: translate(0px, 0px)
+  100%
+    transform: translate(-1px, -1px)
 @keyframes shooting
   0%
     transform: translateY(0)

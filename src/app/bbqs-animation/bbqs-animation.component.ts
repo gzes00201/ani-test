@@ -32,7 +32,7 @@ export interface BBQSResult {
   styleUrls: ['./bbqs-animation.component.sass']
 })
 export class BbqsAnimationComponent implements OnInit {
-  countDownSec = 3
+  countDownSec = 0
   runTimeMs = 0
   result: BBQSResult = {"01":2,"02":4,"03":7,"04":6,"05":1,"06":5,"07":8,"08":3,"09":3}
   light: BBQS_LIGHT = BBQS_LIGHT.GREEN

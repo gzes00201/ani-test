@@ -83,7 +83,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
       return
     }
 
-    if(runTimeMs === 10000){
+    if(runTimeMs > 8000){
       this.handelPlayRealRank();
     } else {
       this.handelPlayRoundRankByNum(this.draw_num+ String(runTimeMs));
