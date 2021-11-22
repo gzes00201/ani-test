@@ -18,21 +18,23 @@
   bottom: -1px
   overflow: hidden
   &.is-run
+    .men-body-final::after
+      animation: people-running 1s steps(11, start)  infinite
     @for $i from 1 through 8
-      .men-layout.speed-#{$i} 
+      .men-layout.speed-#{$i}
         animation: people-jitter #{ 0.2+(0.1*$i)/2  }s steps(11, start)  infinite
         .men-body-run::after
           animation: people-running #{ 0.2+(0.1*$i)  }s steps(11, start)  infinite
-        
+
     .men-body::after, .men-body::before, .men-body-run::before
       opacity: 0
     .men-body-run
       &::after
         opacity: 1
-    
+
     .men-body-run::before
       opacity: 1
-  
+
 @for $i from 0 through 7
   .men-no-#{$i+1}
     left: #{47 + $i*77.75}px
@@ -49,6 +51,14 @@
           background-image: url('^assets/game/BBQS/run_boy.png')
         &::before
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+      .men-body-final
+        opacity: 0
+        &::after
+          background-image: url('^assets/game/BBQS/wave_boy.png')
+        &::before
+          background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+      .men-body-run.is-finish
+        opacity: 0
     @else
       .men-num
         color: #E6324D
@@ -62,6 +72,14 @@
           background-image: url('^assets/game/BBQS/run_girl.png')
         &::before
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+      .men-body-final
+        opacity: 0
+        &::after
+          background-image: url('^assets/game/BBQS/wave_girl.png')
+        &::before
+          background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+      .men-body-run.is-finish
+        opacity: 0
 .men-layout
   display: block
   width: 100%
@@ -115,6 +133,75 @@
       height: 816px
       display: block
       position: absolute
+
+.rank-bar
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 60px
+
+
+.men-body, .men-body-run, .men-body-final
+  &::after, &::before
+    content: ' '
+    width: 100%
+    height: 100%
+    position: absolute
+
+.men-body-run, .men-body-final
+  overflow: hidden
+  &::after
+    content: ' '
+    height: 1704px
+    width: 100%
+    position: absolute
+.men-body-run
+  &::after, &::before
+    opacity: 0
+
+.kill-point
+  position: absolute
+  bottom: 20%
+  left: 10%
+  width: 33px
+  height: 33px
+  background-image: url('^assets/game/BBQS/point.png')
+  opacity: 0
+  &.is-shoot-me
+    animation: show-kill .05s linear 1 forwards 0.2s
+    bottom: 40%
+    left: 40%
+  &.is-play
+    animation: point-run 3s linear  infinite
+    opacity: 1
+  &.is-play.is-shoot
+    animation-play-state: paused
+    opacity: 0
+    transition: .15s
+@keyframes point-run
+  0%
+    transform: translate(0px, 0%)
+  10%
+    transform: translate(#{600*0.1}px, -20px)
+  20%
+    transform: translate(#{600*0.35}px, 30px)
+  30%
+    transform: translate(#{600*0.55}px, -10px)
+  40%
+    transform: translate(#{600*0.75}px, 15px)
+  50%
+    transform: translate(#{600*0.95}px, -30px)
+  60%
+    transform: translate(#{600*0.75}px, 5px)
+  70%
+    transform: translate(#{600*0.55}px, -24px)
+  80%
+    transform: translate(#{600*0.33}px, 20px)
+  90%
+    transform: translate(#{600*0.15}px, -10px)
+  100%
+    transform: translate(0px, 0%)
 @keyframes people-die
   0%
     transform: rotate(-10deg)
@@ -133,32 +220,6 @@
   100%
     opacity: 0
 
-.rank-bar
-  position: absolute
-  top: 0
-  left: 0
-  width: 100%
-  height: 60px
-
-
-.men-body, .men-body-run
-  &::after, &::before
-    content: ' '
-    width: 100%
-    height: 100%
-    position: absolute
-
-.men-body-run
-  overflow: hidden
-  &::after
-    content: ' '
-    height: 1704px
-    width: 100%
-    position: absolute
-.men-body-run
-  &::after, &::before
-    opacity: 0
-
 @keyframes people-running
   0%
     transform: translateY(0)
@@ -169,11 +230,11 @@
   0%
     transform: translate(0px, 0px)
   25%
-    transform: translate(1px, -1px)
+    transform: translate(0px, -2px)
   50%
     transform: translate(0px, 0px)
   100%
-    transform: translate(-1px, -1px)
+    transform: translate(0px, -2px)
 @keyframes shooting
   0%
     transform: translateY(0)

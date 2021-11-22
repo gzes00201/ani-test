@@ -5,7 +5,7 @@ import { BBQSResult, BBQSResultKey } from '../bbqs-animation.component';
 import { BBQSGameRoundSortByNum, BgAnimationConfigFactory, getKillTimes, PeopleAnimationConfigFactory, sortArrWithSeed } from './bbqs-helper';
 import { BBQSPeople, BBQSPeopleState } from './bbqs-people';
 import { BBQS_Animation_Config, AnimationKeyframe, BBQS_LIGHT } from './config/bbqs-animation-config';
-import { interval } from 'rxjs';
+import { interval, timer } from 'rxjs';
 import { take } from 'rxjs';
 
 @Component({
@@ -28,13 +28,16 @@ export class BbqsAnimationSceneComponent implements OnInit {
   public bgAni: BBQSBackground = new BBQSBackground(this.config.bg, this.config.stopTime);;
   public bgKeyframes: AnimationKeyframe[] = [];
 
-  public iskeyframes = false;
+  public isLastkeyframes = false;
   public realRankNo: number[] = [];
   public dieRankNo: number[] = [];
   public currentRankNo: number[] = [];
 
   light: BBQS_LIGHT = BBQS_LIGHT.GREEN;
   BBQS_LIGHT = BBQS_LIGHT
+  isShoot = false;
+  shootingNo: number = 0
+
   constructor() {
     this.initConfig()
    }
@@ -70,7 +73,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
 
   private handelRunTimeMs(runTimeMs: number) {
     console.log('handelRunTimeMs', runTimeMs)
-    this.iskeyframes = Math.round(runTimeMs/1000) === 10;
+    this.isLastkeyframes = Math.round(runTimeMs/1000) === 10;
     this.bgAni.tickRunTime(runTimeMs);
     this.handelLightChange(runTimeMs)
     this.handelPeoplesRank(runTimeMs);
@@ -103,7 +106,8 @@ export class BbqsAnimationSceneComponent implements OnInit {
 
   updatePeoplesRunTime(runTimeMs: number) {
     if(this.killTimes[0]===(runTimeMs)){
-      this.handelPeopleDie(this.dieRankNo);
+      // 0.8秒後再開始殺
+      timer(500).subscribe(()=>this.handelPeopleDie(this.dieRankNo));
     }
 
     this.peoples.forEach(people=> {
@@ -181,13 +185,23 @@ export class BbqsAnimationSceneComponent implements OnInit {
   private handelPeopleDie(dieRankNo: number[]) {
     const roundSortDieRank = sortArrWithSeed(dieRankNo, this.draw_num);
 
+    this.isShoot = true;
     // 依序殺死玩家
-    interval(250).pipe(
-      take(roundSortDieRank.length)
-    ).subscribe((ind)=>{
-      let currentPeople = this.getPeopleFromNo(roundSortDieRank[ind]);
-      if(currentPeople) {
-        currentPeople.setStatus(BBQSPeopleState.DIE);
+    interval(1200/roundSortDieRank.length).pipe(
+      take(roundSortDieRank.length),
+    ).subscribe({
+      next: (ind)=>{
+        let currentPeople = this.getPeopleFromNo(roundSortDieRank[ind]);
+        if(currentPeople) {
+          currentPeople.setStatus(BBQSPeopleState.DIE);
+          this.shootingNo = currentPeople.no
+        }
+      },
+      complete: ()=>{
+        timer(250).subscribe(()=>{
+          this.isShoot = false;
+          this.shootingNo = 0;
+        });
       }
     })
 

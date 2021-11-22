@@ -1,21 +1,36 @@
+
 <div class="bg" [style.transform]="'translateY('+(bgAni.currentKeyFrame.translateY)+'px) scale('+ bgAni.currentKeyFrame.scale">
   <div class="men"
         *ngFor="let people of peoples; let index = index"
-        [ngClass]="'men-no-'+(index+1)"
+        [ngClass]="['men-no-'+(index+1)]"
         [class.is-run]="runTimeMs>0 && light === BBQS_LIGHT.GREEN && people.status === BBQSPeopleState.LIVE"
         [class.is-stop]="runTimeMs===0 || light === BBQS_LIGHT.RED"
         [ngStyle]="{
-          transform: 'translate('+ people.currentKeyFrame.translateX +'px, '+ people.currentKeyFrame.translateY +'px) scale('+ people.currentKeyFrame.scale +') translateZ(0)'
+          transform: 'translate('+ people.currentKeyFrame.translateX +'px, '+ people.currentKeyFrame.translateY +'px) scale('+ people.currentKeyFrame.scale +') translateZ(0)',
+          transition: 'all '+ (isLastkeyframes ? ((1/(8-dieRankNo.length) * people.rank)) : 1) +'s linear 0s',
+          zIndex: people.rank
         }" >
         <div class="men-layout"
-          [ngClass]="'speed-' + people.rank"
+          [ngClass]="['speed-' + people.rank]"
           [class.is-die]="people.status === BBQSPeopleState.DIE">
           <span class="men-body"></span>
-          <span class="men-body-run"></span>
+          <span class="men-body-run"
+                [ngStyle]="{
+                  animation: runTimeMs === 10000 ? 'hide-ani .0s linear '+ ((1/(8-dieRankNo.length) * people.rank)) +'s' +' forwards ' : ''
+                }"
+                ></span>
+          <span class="men-body-final"
+                [class.is-finish]="runTimeMs === 10000  && people.status === BBQSPeopleState.LIVE"
+                [ngStyle]="{
+                  animation: runTimeMs === 10000 ? 'show-kill .0s linear 1 forwards '+ (isLastkeyframes ? ((1/(8-dieRankNo.length) * people.rank)) : 1) +'s' : ''
+                }"></span>
           <span class="men-num">{{index+1}}</span>
           <span [class.is-kill]="light === BBQS_LIGHT.RED"></span>
+          <div class="kill-point" [class.is-shoot-me]="isShoot && shootingNo === people.no"></div>
         </div>
-
   </div>
 </div>
 
+<div class="kill-point"
+    [class.is-play]="light === BBQS_LIGHT.RED"
+    [class.is-shoot]="isShoot && shootingNo != 0"></div>
