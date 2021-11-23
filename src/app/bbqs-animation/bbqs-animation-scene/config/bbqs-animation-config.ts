@@ -40,7 +40,7 @@ export interface BBQSAnimationPositionConfig {
 export const BBQS_Animation_Config: AnimationConfig = {
   stopTime:[3000],
   bg: {
-    endTransform: {translateX: 0, translateY: 20, scale: 3.3},
+    endTransform: {translateX: 0, translateY: 70, scale: 3.3},
   },
   people1: {
     endTransform: {translateX: 190, translateY: -160, scale: 0.28},

@@ -2,7 +2,7 @@
   position: relative
   width: 750px
   height: 424px
-  background-image: url('^assets/game/BBQS/bg.png')
+  background-image: url('^assets/game/BBQS/game_bg.png')
   background-size: contain
   transform-origin: center 160px
   transition: 1s
@@ -16,13 +16,13 @@
   backface-visibility: hidden
   transition-timing-function: linear
   bottom: -1px
-  overflow: hidden
   &.is-run
     .men-body-final::after
-      animation: people-running 1s steps(11, start)  infinite
+      animation: people-wave 1s steps(6, start)  infinite
     @for $i from 1 through 8
-      .men-layout.speed-#{$i}
+      .men-layout.speed-#{$i}:not(.is-finish)
         animation: people-jitter #{ 0.2+(0.1*$i)/2  }s steps(11, start)  infinite
+      .men-layout.speed-#{$i}
         .men-body-run::after
           animation: people-running #{ 0.2+(0.1*$i)  }s steps(11, start)  infinite
 
@@ -43,20 +43,29 @@
         color: #2754A3
       .men-body
         &::before
-          background-image: url('^assets/game/BBQS/body/run_00000.png')
+          background-image: url('^assets/game/BBQS/body/ready_bottom.png')
+          background-size: contain
         &::after
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png'), url('^assets/game/BBQS/body/ready_top_boy.png')
+          background-size: contain
+          z-index: 2
       .men-body-run
         &::after
           background-image: url('^assets/game/BBQS/run_boy.png')
+          background-size: contain
         &::before
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+          background-size: contain
+          z-index: 2
       .men-body-final
         opacity: 0
         &::after
           background-image: url('^assets/game/BBQS/wave_boy.png')
+          background-size: contain
         &::before
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+          background-size: contain
+          z-index: 2
       .men-body-run.is-finish
         opacity: 0
     @else
@@ -64,30 +73,41 @@
         color: #E6324D
       .men-body
         &::before
-          background-image: url('^assets/game/BBQS/body/run_00000.png')
+          background-image: url('^assets/game/BBQS/body/ready_bottom.png')
+          background-size: contain
         &::after
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png'), url('^assets/game/BBQS/body/ready_top_girl.png')
+          background-size: contain
+          z-index: 2
       .men-body-run
         &::after
           background-image: url('^assets/game/BBQS/run_girl.png')
+          background-size: contain
         &::before
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+          background-size: contain
+          z-index: 2
       .men-body-final
         opacity: 0
         &::after
           background-image: url('^assets/game/BBQS/wave_girl.png')
+          background-size: contain
         &::before
           background-image: url('^assets/game/BBQS/body/people_no_0#{$i+1}.png')
+          background-size: contain
+          z-index: 2
       .men-body-run.is-finish
         opacity: 0
 .men-layout
   display: block
   width: 100%
   height: 100%
+  overflow: hidden
   &.is-die
     animation: people-die .1s ease-in-out 1
     .men-body::after
       animation: hide-ani .1s ease-in-out 1 forwards .25s
+      z-index: 0
     .men-num
       animation: hide-ani .1s ease-in-out 1 forwards .25s
     .is-kill
@@ -113,6 +133,7 @@
     align-items: center
     justify-content: center
     font-weight: bold
+    z-index: 3
   .is-kill
     width: 100%
     height: 100%
@@ -122,6 +143,7 @@
     &::before
       content: ''
       background-image: url('^assets/game/BBQS/out_mask.png')
+      background-size: contain
       width: 100%
       height: 100%
       display: block
@@ -129,6 +151,7 @@
     &::after
       content: ''
       background-image: url('^assets/game/BBQS/shoot.png')
+      background-size: contain
       width: 100%
       height: 816px
       display: block
@@ -149,11 +172,27 @@
     height: 100%
     position: absolute
 
-.men-body-run, .men-body-final
+.men-body-final
+  overflow: hidden
+  display: block
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  &::after
+    content: ' '
+    height: 994px
+    background-size: contain
+    width: 100%
+    position: absolute
+
+.men-body-run
   overflow: hidden
   &::after
     content: ' '
     height: 1704px
+    background-size: contain
     width: 100%
     position: absolute
 .men-body-run
@@ -167,9 +206,10 @@
   width: 33px
   height: 33px
   background-image: url('^assets/game/BBQS/point.png')
+  background-size: contain
   opacity: 0
   &.is-shoot-me
-    animation: show-kill .05s linear 1 forwards 0.2s
+    animation: shoot-me .4s linear 1 forwards 0.1s
     bottom: 40%
     left: 40%
   &.is-play
@@ -179,6 +219,62 @@
     animation-play-state: paused
     opacity: 0
     transition: .15s
+.final-star
+  position: absolute
+  top: -18px
+  left: 53%
+  transform: translateX(-50%)
+  width: 77px
+  height: 77px
+  overflow: hidden
+  opacity: 0
+  &::after
+    content: ''
+    width: 100%
+    height: 847px
+    background-image: url('^assets/game/BBQS/star.png')
+    background-size: contain
+    animation: star-running 1s steps(11, start)  infinite
+    display: block
+.bbqs-doll
+  position: absolute
+  top: 68px
+  left: 50%
+  transform: translateX(-50%) scale(0.4)
+  width: 186px
+  height: 215px
+  overflow: hidden
+  &::after,  &::before
+    content: ''
+    width: 100%
+    background-size: contain
+    //animation: star-running 1s steps(11, start)  infinite
+    display: block
+    position: absolute
+    top: 0px
+    left: 0px
+    backface-visibility: hidden
+  &::after
+    height: 1505px
+    background-image: url('^assets/game/BBQS/doll_rotate_head.png')
+    background-size: contain
+  &.doll-head-trun::after
+    animation: doll-head-trun .5s steps(6, start) forwards 1
+  &.doll-head-back::after
+    animation: doll-head-back .5s steps(6, start) forwards 1 .5s
+    transform: translateY(-1290px)
+  &::before
+    height: 2795px
+    background-image: url('^assets/game/BBQS/doll_rotate_body.png'), url('^assets/game/BBQS/doll_hand.png')
+    background-size: contain
+    background-position: top, center 1505px
+    background-repeat: no-repeat
+  &.doll-body-trun::before
+    animation: doll-body-trun 1s steps(12, start) forwards 1
+  &.doll-body-back::before
+    animation: doll-body-back 1s steps(12, start) forwards 1
+    transform: translateY(-2580px)
+
 @keyframes point-run
   0%
     transform: translate(0px, 0%)
@@ -207,7 +303,11 @@
     transform: rotate(-10deg)
   100%
     transform: rotate(0deg)
-
+@keyframes shoot-me
+  0%, 99%
+    opacity: 1
+  100%
+    opacity: 0
 @keyframes show-kill
   0%
     opacity: 0
@@ -225,6 +325,43 @@
     transform: translateY(0)
   100%
     transform: translateY(-1562px)
+
+@keyframes people-wave
+  0%
+    transform: translateY(0)
+  100%
+    transform: translateY(-984px)
+
+@keyframes doll-head-trun
+  0%
+    transform: translateY(0) translateZ(0)
+  100%
+    transform: translateY(-1290px) translateZ(0)
+
+@keyframes doll-head-back
+  0%
+    transform: translateY(-1290px) translateZ(0)
+  100%
+    transform: translateY(0px) translateZ(0)
+
+@keyframes doll-body-trun
+  0%
+    transform: translateY(0px) translateZ(0)
+  100%
+    transform: translateY(-2580px) translateZ(0)
+@keyframes doll-body-back
+  0%
+    transform: translateY(-2580px) translateZ(0)
+  100%
+    transform: translateY(0px) translateZ(0)
+
+
+@keyframes star-running
+  0%
+    transform: translateY(0)
+  100%
+    transform: translateY(-847px)
+
 
 @keyframes people-jitter
   0%

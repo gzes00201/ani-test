@@ -15,6 +15,7 @@ import { take } from 'rxjs';
 })
 export class BbqsAnimationSceneComponent implements OnInit {
   @Input() draw_num: string = '';
+  @Input() countDown: number = 0;
   @Input() runTimeMs: number = 0;
   @Input() result?: BBQSResult;
   @Output() onLightChange =  new EventEmitter<BBQS_LIGHT>();
@@ -22,7 +23,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
 
   public BBQSPeopleState = BBQSPeopleState
   private config = BBQS_Animation_Config;
-  private killTimes: number[] = []
+  public killTimes: number[] = []
 
   public peoples: BBQSPeople[] = [];
   public bgAni: BBQSBackground = new BBQSBackground(this.config.bg, this.config.stopTime);;
@@ -36,7 +37,8 @@ export class BbqsAnimationSceneComponent implements OnInit {
   light: BBQS_LIGHT = BBQS_LIGHT.GREEN;
   BBQS_LIGHT = BBQS_LIGHT
   isShoot = false;
-  shootingNo: number = 0
+  shootingNo: number[] = []
+  isInited = false;
 
   constructor() {
     this.initConfig()
@@ -60,6 +62,8 @@ export class BbqsAnimationSceneComponent implements OnInit {
       this.tickToCurrentMs();
       this.bgAni.tickRunTime(this.runTimeMs);
     }
+
+    this.isInited = true
   }
 
   private tickToCurrentMs() {
@@ -105,9 +109,14 @@ export class BbqsAnimationSceneComponent implements OnInit {
   }
 
   updatePeoplesRunTime(runTimeMs: number) {
+    console.log('updatePeoplesRunTime', runTimeMs)
     if(this.killTimes[0]===(runTimeMs)){
-      // 0.8秒後再開始殺
-      timer(500).subscribe(()=>this.handelPeopleDie(this.dieRankNo));
+      // 0.8秒後再開始殺 // 預設時 不能進入非同步
+      if(this.isInited){
+        timer( 500).subscribe(()=>this.handelPeopleDie(this.dieRankNo));
+      } else {
+        this.handelPeopleDie(this.dieRankNo)
+      }
     }
 
     this.peoples.forEach(people=> {
@@ -174,11 +183,13 @@ export class BbqsAnimationSceneComponent implements OnInit {
     let newPeopleRanks: BBQSPeople[]  = []
 
     this.currentRankNo.forEach(no=>{
+
       let cuurent = this.getPeopleFromNo(no)
       if(cuurent){
         newPeopleRanks.push(cuurent)
       }
     })
+    console.log(newPeopleRanks)
     this.onPeoplesRankChange.emit(newPeopleRanks);
   }
 
@@ -186,24 +197,39 @@ export class BbqsAnimationSceneComponent implements OnInit {
     const roundSortDieRank = sortArrWithSeed(dieRankNo, this.draw_num);
 
     this.isShoot = true;
-    // 依序殺死玩家
-    interval(1200/roundSortDieRank.length).pipe(
-      take(roundSortDieRank.length),
-    ).subscribe({
-      next: (ind)=>{
-        let currentPeople = this.getPeopleFromNo(roundSortDieRank[ind]);
-        if(currentPeople) {
-          currentPeople.setStatus(BBQSPeopleState.DIE);
-          this.shootingNo = currentPeople.no
+    if(this.isInited) {
+      // 依序殺死玩家
+      interval(1200/roundSortDieRank.length).pipe(
+        take(roundSortDieRank.length),
+      ).subscribe({
+        next: (ind)=>{
+          let currentPeople = this.getPeopleFromNo(roundSortDieRank[ind]);
+          if(currentPeople) {
+            currentPeople.setStatus(BBQSPeopleState.DIE);
+            this.shootingNo.push(currentPeople.no)
+          }
+        },
+        complete: ()=>{
+          timer(250).subscribe(()=>{
+            this.isShoot = false;
+           this.shootingNo = [];
+          });
         }
-      },
-      complete: ()=>{
-        timer(250).subscribe(()=>{
-          this.isShoot = false;
-          this.shootingNo = 0;
-        });
-      }
-    })
+      })
+    } else {
+      // 預設時 不能進入非同步
+      roundSortDieRank.forEach(no=>{
+        let currentPeople = this.getPeopleFromNo(no);
+          if(currentPeople) {
+            currentPeople.setStatus(BBQSPeopleState.DIE);
+            this.shootingNo.push(currentPeople.no)
+          }
+      });
+
+      this.isShoot = false;
+      this.shootingNo = [];
+    }
+
 
   }
 
@@ -240,6 +266,6 @@ export class BbqsAnimationSceneComponent implements OnInit {
   }
 
   private resetCurrentRank(){
-    this.setCurrentRank([1,2,3,4,5,6,7]);
+    this.setCurrentRank([1,2,3,4,5,6,7,8]);
   }
 }

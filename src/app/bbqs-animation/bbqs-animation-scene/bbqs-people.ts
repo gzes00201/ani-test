@@ -25,6 +25,10 @@ export class BBQSPeople {
   get rank(): number {
     return this._rank;
   }
+  private _runProess: number = 0;
+  get runProess(): number {
+    return this._runProess;
+  }
   private _currentKeyFrame: AnimationKeyframe = new AnimationKeyframe(0, 0, 0, 1);
   get currentKeyFrame(): AnimationKeyframe {
     return this._currentKeyFrame;
@@ -41,6 +45,7 @@ export class BBQSPeople {
     this.setStatus(BBQSPeopleState.LIVE);
     this._currentKeyFrame = new AnimationKeyframe(0, 0, 0, 1);
     this._rank = 0;
+    this._runProess = 0;
   }
 
   public tickRunTime(ms: number){
@@ -48,7 +53,6 @@ export class BBQSPeople {
       console.log(`no ${this.no} die`)
     } else {
       this.handelRun(ms);
-
     }
   }
 
@@ -67,6 +71,8 @@ export class BBQSPeople {
     }
 
     this._currentKeyFrame  = newKeyFrame
+    this._runProess = Math.abs(this._currentKeyFrame.translateY) / Math.abs(this._keyframes[this._keyframes.length-1].translateY );
+
   }
 
   private getOffsetByRank(offset: number): number {

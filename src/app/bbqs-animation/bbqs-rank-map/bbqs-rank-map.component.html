@@ -1,6 +1,16 @@
 <div class="rank-map-wapper">
   <div class="state_doll"></div>
-  <div *ngFor="let people of currentPeopleRank" class="people-item" [ngClass]="'people-item-no-'+people.no">
-    <span class="no">{{people.no}}</span>
+  <div
+    *ngFor="let people of rank"
+    class="people-item"
+    [ngClass]="'people-item-no-'+people.no"
+    [ngStyle]="{
+      bottom: (people.ins ? 6+ (people.ins.runProess * 164) : 0) + 'px',
+      transition: 'all '+ (runTimeMs=== 10000 ? ((1/(8-dieRankNo.length) * (people.ins ? people.ins.rank : 0))) : runTimeMs===0 ? 0 : 1) +'s linear 0s'
+    }"
+    >
+    <span class="no">{{people.no}} </span>
+    <span class="is-die" [class.is-active]="people.ins ? people.ins.status === BBQSPeopleState.DIE : false"></span>
   </div>
 </div>
+

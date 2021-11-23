@@ -1,5 +1,8 @@
 
-<div class="bg" [style.transform]="'translateY('+(bgAni.currentKeyFrame.translateY)+'px) scale('+ bgAni.currentKeyFrame.scale">
+<div class="bg"
+  [style.transform]="'translateY('+(bgAni.currentKeyFrame.translateY)+'px) scale('+ bgAni.currentKeyFrame.scale"
+  [style.transition]="'all ' + (runTimeMs === 0 ? 0 : 1.1) + 's linear'"
+  >
   <div class="men"
         *ngFor="let people of peoples; let index = index"
         [ngClass]="['men-no-'+(index+1)]"
@@ -7,11 +10,12 @@
         [class.is-stop]="runTimeMs===0 || light === BBQS_LIGHT.RED"
         [ngStyle]="{
           transform: 'translate('+ people.currentKeyFrame.translateX +'px, '+ people.currentKeyFrame.translateY +'px) scale('+ people.currentKeyFrame.scale +') translateZ(0)',
-          transition: 'all '+ (isLastkeyframes ? ((1/(8-dieRankNo.length) * people.rank)) : 1) +'s linear 0s',
+          transition: 'all '+ (isLastkeyframes ? ((1/(8-dieRankNo.length) * people.rank)) : runTimeMs===0 ? 0 : 1) +'s linear 0s',
           zIndex: people.rank
         }" >
         <div class="men-layout"
           [ngClass]="['speed-' + people.rank]"
+          [class.is-finish]="runTimeMs === 10000  && people.status === BBQSPeopleState.LIVE"
           [class.is-die]="people.status === BBQSPeopleState.DIE">
           <span class="men-body"></span>
           <span class="men-body-run"
@@ -23,14 +27,28 @@
                 [class.is-finish]="runTimeMs === 10000  && people.status === BBQSPeopleState.LIVE"
                 [ngStyle]="{
                   animation: runTimeMs === 10000 ? 'show-kill .0s linear 1 forwards '+ (isLastkeyframes ? ((1/(8-dieRankNo.length) * people.rank)) : 1) +'s' : ''
-                }"></span>
+                }">
+          </span>
           <span class="men-num">{{index+1}}</span>
           <span [class.is-kill]="light === BBQS_LIGHT.RED"></span>
-          <div class="kill-point" [class.is-shoot-me]="isShoot && shootingNo === people.no"></div>
+          <div class="kill-point" [class.is-shoot-me]="isShoot && shootingNo.includes(people.no) "></div>
         </div>
+        <span class="final-star"
+              [ngStyle]="{
+                animation: runTimeMs === 10000 ? 'show-kill .0s linear 1 forwards '+ (isLastkeyframes ? ((1/(8-dieRankNo.length) * people.rank)) : 1) +'s' : ''
+              }"></span>
   </div>
+
+  <div class="bbqs-doll"
+    [class.doll-body-trun]="countDown === 0"
+    [class.doll-body-back]="isLastkeyframes"
+    [class.doll-head-trun]="countDown === 0 && !(killTimes.includes(runTimeMs) || killTimes.includes(runTimeMs+1000))"
+    [class.doll-head-back]="killTimes.includes(runTimeMs) || killTimes.includes(runTimeMs+1000) || isLastkeyframes"
+
+></div>
 </div>
 
 <div class="kill-point"
+    *ngIf="false"
     [class.is-play]="light === BBQS_LIGHT.RED"
-    [class.is-shoot]="isShoot && shootingNo != 0"></div>
+    [class.is-shoot]="isShoot "></div>

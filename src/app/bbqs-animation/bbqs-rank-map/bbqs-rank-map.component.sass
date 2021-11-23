@@ -20,12 +20,39 @@
   display: flex
   align-items: center
   justify-content: center
+  transition: 1s
+  transition-timing-function: linear
   .no
     color: white
     font-size: 20px
     transform: scale(0.5)
     display: block
     font-weight: bold
+  .is-die
+    width: 9px
+    height: 9px
+    position: absolute
+    top: -4px
+    right: -3px
+    background-color: #4D4D4D
+    border-radius: 5px
+    display: none
+    &.is-active
+      display: block
+    &::after, &::before
+      content: ''
+      width: 1px
+      height: 70%
+      background-color: #fff
+      border-radius: 3px
+      display: block
+      position: absolute
+      top: 50%
+      left: 50%
+    &::after
+      transform: translate(-50%, -50%) rotate(45deg)
+    &::before
+      transform: translate(-50%, -50%) rotate(-45deg)
 @for $i from 0 through 7
   .people-item-no-#{$i+1}
     left: calc(#{16 * $i}px + 9px)

@@ -1,12 +1,13 @@
 <div class="bbqs-container">
   <app-bbqs-animation-scene
+        [countDown]="countDownSec"
         [runTimeMs]="runTimeMs"
         [result]="result"
         [draw_num]="draw_num"
         (onLightChange)="handelLightChange($event)"
         (onPeoplesRankChange)="handelPeopleRankChange($event)"></app-bbqs-animation-scene>
   <app-bbqs-run-time-kanban [runTimeMs]="runTimeMs" [light]="light" *ngIf="countDownSec === 0"></app-bbqs-run-time-kanban>
-  <app-bbqs-rank-map [currentPeopleRank]="currentPeopleRank"></app-bbqs-rank-map>
+  <app-bbqs-rank-map [runTimeMs]="runTimeMs" [currentPeopleRank]="currentPeopleRank"></app-bbqs-rank-map>
   <app-bbqs-animation-countdown [countDown]="countDownSec" *ngIf="countDownSec > 0"></app-bbqs-animation-countdown>
 </div>
 <div class="origin-bbqs-wapper" *ngIf="displayOriginWapper">
