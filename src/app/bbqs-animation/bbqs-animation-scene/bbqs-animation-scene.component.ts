@@ -1,5 +1,5 @@
 import { BBQSBackground } from './bbqs-background';
-import { Component, Input, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, SimpleChanges, EventEmitter, OnDestroy } from '@angular/core';
 
 import { BBQSResult, BBQSResultKey } from '../bbqs-animation.component';
 import { BBQSGameRoundSortByNum, BgAnimationConfigFactory, getKillTimes, PeopleAnimationConfigFactory, sortArrWithSeed } from './bbqs-helper';
@@ -7,19 +7,21 @@ import { BBQSPeople, BBQSPeopleState } from './bbqs-people';
 import { BBQS_Animation_Config, AnimationKeyframe, BBQS_LIGHT } from './config/bbqs-animation-config';
 import { interval, timer } from 'rxjs';
 import { take } from 'rxjs';
+import { Sound } from 'src/app/sound';
 
 @Component({
   selector: 'app-bbqs-animation-scene',
   templateUrl: './bbqs-animation-scene.component.html',
   styleUrls: ['./bbqs-animation-scene.component.sass']
 })
-export class BbqsAnimationSceneComponent implements OnInit {
+export class BbqsAnimationSceneComponent implements OnInit, OnDestroy {
   @Input() draw_num: string = '';
   @Input() countDown: number = 0;
   @Input() runTimeMs: number = 0;
   @Input() result?: BBQSResult;
   @Output() onLightChange =  new EventEmitter<BBQS_LIGHT>();
   @Output() onPeoplesRankChange =  new EventEmitter<BBQSPeople[]>();
+  @Output() onGameStateChange =  new EventEmitter<boolean>();
 
   public BBQSPeopleState = BBQSPeopleState
   private config = BBQS_Animation_Config;
@@ -39,13 +41,24 @@ export class BbqsAnimationSceneComponent implements OnInit {
   isShoot = false;
   shootingNo: number[] = []
   isInited = false;
+  isGameOver = false;
 
+  // sound
+  doll_1_2_3 = new Sound('assets/audio/doll_1_2_3.mp3');
+  doll_trun = new Sound('assets/audio/doll_trun.mp3');
+  bbqs_final = new Sound('assets/audio/bbqs_final.mp3');
   constructor() {
     this.initConfig()
    }
 
   ngOnInit(): void {
     this.handelCheckCurrentTime();
+  }
+
+  ngOnDestroy(): void {
+    this.doll_1_2_3.pause();
+    this.doll_trun.pause();
+    this.bbqs_final.pause();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -77,11 +90,47 @@ export class BbqsAnimationSceneComponent implements OnInit {
 
   private handelRunTimeMs(runTimeMs: number) {
     console.log('handelRunTimeMs', runTimeMs)
+    this.handelSound(runTimeMs);
+    if(this.isGameOver) {
+      return;
+    }
     this.isLastkeyframes = Math.round(runTimeMs/1000) === 10;
     this.bgAni.tickRunTime(runTimeMs);
     this.handelLightChange(runTimeMs)
     this.handelPeoplesRank(runTimeMs);
     this.updatePeoplesRunTime(runTimeMs);
+
+  }
+
+  private handelSound(runTimeMs: number) {
+    if(runTimeMs === 10000){
+      console.log('in last')
+      timer(1000).subscribe(()=> this.bbqs_final.play()) ;
+      return;
+    }
+    if(!this.isInited || this.doll_1_2_3.isPlaying || this.runTimeMs === 0  ||this.killTimes.includes(runTimeMs)){
+      if(this.killTimes.includes(runTimeMs) && !this.doll_trun.isPlaying){
+        this.doll_trun.play();
+      }
+      return
+    }
+    console.log(runTimeMs)
+    if(runTimeMs < this.killTimes[0]){
+      // 第一次綠燈
+      this.doll_1_2_3.playbackRate = 1.5;
+      this.doll_1_2_3.currentTime = (1-(4000-runTimeMs)/3000) * this.doll_1_2_3.duration ;
+      console.log('no1',(1-(4000-runTimeMs)/3000) * this.doll_1_2_3.duration)
+      this.doll_1_2_3.play();
+      return;
+    }
+
+    if(runTimeMs > this.killTimes[this.killTimes.length -1] + 1000 ){
+      // 第二次綠燈
+      this.doll_1_2_3.playbackRate = 1.5;
+      this.doll_1_2_3.currentTime = (1-(10000-runTimeMs)/3000) * this.doll_1_2_3.duration ;
+      console.log('no2',(1-(10000-runTimeMs)/3000) * this.doll_1_2_3.duration)
+      this.doll_1_2_3.play();
+    }
 
   }
 
@@ -136,7 +185,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
     this.bgAni.reset();
     this.handelRankConfig(result);
     this.updatePeoplesRunTime(0);
-
+    this.changeGameState(false);
     console.log('done')
   }
 
@@ -210,10 +259,7 @@ export class BbqsAnimationSceneComponent implements OnInit {
           }
         },
         complete: ()=>{
-          timer(250).subscribe(()=>{
-            this.isShoot = false;
-           this.shootingNo = [];
-          });
+          timer(250).subscribe(()=> this.handelKillDone());
         }
       })
     } else {
@@ -225,12 +271,22 @@ export class BbqsAnimationSceneComponent implements OnInit {
             this.shootingNo.push(currentPeople.no)
           }
       });
-
-      this.isShoot = false;
-      this.shootingNo = [];
+      this.handelKillDone();
     }
 
 
+  }
+
+  private handelKillDone() {
+    // 處理殺完人
+    this.changeGameState(this.peoples.filter(people=> people.status === BBQSPeopleState.LIVE).length === 0);
+    this.isShoot = false;
+    this.shootingNo = [];
+  }
+
+  private changeGameState(isGameOver: boolean) {
+    this.isGameOver = isGameOver;
+    this.onGameStateChange.emit(this.isGameOver);
   }
 
   private handelPeopleRoundRank(roundSort: number[]) {
@@ -240,7 +296,6 @@ export class BbqsAnimationSceneComponent implements OnInit {
         currentPeople.setRankOffset(rankIndex+1);
       }
     });
-
   }
 
   private getPeopleFromNo(no: number): BBQSPeople | undefined{

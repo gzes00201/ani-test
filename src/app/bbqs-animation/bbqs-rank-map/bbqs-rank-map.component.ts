@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { BBQSPeople, BBQSPeopleState } from '../bbqs-animation-scene/bbqs-people';
+import { BBQS_LIGHT } from '../bbqs-animation-scene/config/bbqs-animation-config';
 interface RankIns {
   no: number;
   ins?: BBQSPeople;
@@ -12,6 +13,9 @@ interface RankIns {
 export class BbqsRankMapComponent implements OnInit {
   @Input() currentPeopleRank: BBQSPeople[] = [];
   @Input() runTimeMs: number = 0;
+  @Input() light: BBQS_LIGHT = BBQS_LIGHT.GREEN;
+  BBQS_LIGHT = BBQS_LIGHT
+
   dieRankNo: number[] = []
   BBQSPeopleState = BBQSPeopleState;
   rank: RankIns[]  = [
@@ -29,7 +33,7 @@ export class BbqsRankMapComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     //Add '${implements OnChanges}' to the class.
-    if(changes['currentPeopleRank'].currentValue){
+    if(changes['currentPeopleRank']){
       this.dieRankNo = [];
       this.currentPeopleRank.forEach(people=>{
         const current = this.rank.find(item=> item.no === people.no)

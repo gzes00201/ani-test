@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { timer } from 'rxjs';
 import { BBQSPeople, BBQSPeopleState } from '../bbqs-animation-scene/bbqs-people';
 
 @Component({
@@ -8,10 +9,19 @@ import { BBQSPeople, BBQSPeopleState } from '../bbqs-animation-scene/bbqs-people
 })
 export class BbqsCurrentRankComponent implements OnInit {
   @Input() currentPeopleRank: BBQSPeople[] = [];
-  BBQSPeopleState = BBQSPeopleState
-  constructor() { }
+  @Input() runTimeMs: number = 0;
 
+  BBQSPeopleState = BBQSPeopleState
+  displayRank: BBQSPeople[] = [];
+  constructor() { }
   ngOnInit(): void {
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['currentPeopleRank']){
+      timer(this.runTimeMs === 0 ? 0 : 1000).subscribe(()=>{
+        this.displayRank = this.currentPeopleRank.map(item=> item);
+      })
+    }
   }
 
 }

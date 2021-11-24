@@ -10,6 +10,22 @@
   top: 8%
   left: 4%
   box-sizing: border-box
+  color: rgba(71,71,71,1)
+  font-size: 12px
+  .red-light-text
+    position: absolute
+    left: 19px
+    top: 5px
+  &.red-light
+    .red-light-text
+      color: rgba(255,255,255,1)
+  .green-light-text
+    position: absolute
+    right: 19px
+    top: 5px
+  &.green-light
+    .green-light-text
+      color: rgba(255,255,255,1)
   &.red-light::before
     content: ' '
     width: 50%

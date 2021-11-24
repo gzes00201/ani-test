@@ -1,4 +1,5 @@
-<div class="ani-wapper">
+<div class="ani-wapper" *ngIf="isGo">
   <app-bbqs-animation></app-bbqs-animation>
 </div>
 
+<button (click)="isGo = !isGo">go</button>

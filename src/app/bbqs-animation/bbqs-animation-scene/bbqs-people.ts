@@ -1,3 +1,4 @@
+import { Sound } from 'src/app/sound';
 import { PeopleAnimationConfigFactory, PeopleRankOffsetConfigFactory } from "./bbqs-helper";
 import { AnimationKeyframe, BBQSAnimationPositionConfig, BBQSTransformPosition } from "./config/bbqs-animation-config";
 export enum BBQSPeopleState {
@@ -34,10 +35,23 @@ export class BBQSPeople {
     return this._currentKeyFrame;
   }
   private _rankOffset: BBQSTransformPosition = new BBQSTransformPosition(0, 0, 1);
-  private currentMs = 0;
-
+  private dieAudio?: Sound;
   constructor(no: number, config: BBQSAnimationPositionConfig, stopTime: number[]) {
     this._no = no;
+
+    if(this._no === 1 || this._no === 2 ){
+      this.dieAudio = new Sound('assets/audio/kill_boy_1.mp3');
+    }
+    if(this._no === 3 || this._no === 4 ){
+      this.dieAudio = new Sound('assets/audio/kill_boy_2.mp3');
+    }
+
+    if(this._no === 5 || this._no === 6 ){
+      this.dieAudio = new Sound('assets/audio/kill_girl_1.mp3');
+    }
+    if(this._no === 7 || this._no === 8 ){
+      this.dieAudio = new Sound('assets/audio/kill_girl_2.mp3');
+    }
     this.setBaseKeyframes(config, stopTime);
   }
 
@@ -80,7 +94,14 @@ export class BBQSPeople {
   }
 
   public setStatus(status: BBQSPeopleState) {
+
+    if(this._status===  BBQSPeopleState.LIVE && status === BBQSPeopleState.DIE && this.dieAudio){
+      this.dieAudio.currentTime = 0;
+      this.dieAudio.play();
+
+    }
     this._status = status;
+
   }
 
   public setRankOffset(rank: number) {

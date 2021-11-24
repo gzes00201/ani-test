@@ -18,7 +18,10 @@
     padding-right: 14px
     box-sizing: border-box
     padding-top: 18px
-@for $i from 0 through 5
+.countDown-text-3
+    background-image: url('^assets/game/BBQS/countdown_321_3.png')
+    opacity: 1
+@for $i from 0 through 2
   .countDown-text-#{$i}
     background-image: url('^assets/game/BBQS/countdown_321_#{$i}.png')
     animation: typing-#{$i} 0.5s steps(1, end) 0s forwards

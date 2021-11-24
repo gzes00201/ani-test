@@ -40,31 +40,31 @@ export interface BBQSAnimationPositionConfig {
 export const BBQS_Animation_Config: AnimationConfig = {
   stopTime:[3000],
   bg: {
-    endTransform: {translateX: 0, translateY: 70, scale: 3.3},
+    endTransform: {translateX: 0, translateY: 67, scale: 3.1},
   },
   people1: {
-    endTransform: {translateX: 190, translateY: -160, scale: 0.28},
+    endTransform: {translateX: 204, translateY: -155, scale: 0.2},
   },
   people2: {
-    endTransform: {translateX: 130, translateY: -160, scale: 0.28},
+    endTransform: {translateX: 145, translateY: -155, scale: 0.2},
   },
   people3: {
-    endTransform: {translateX: 70, translateY: -160, scale: 0.28},
+    endTransform: {translateX: 84, translateY: -155, scale: 0.2},
   },
   people4: {
-    endTransform: {translateX: 10, translateY: -160, scale: 0.28},
+    endTransform: {translateX: 25, translateY: -155, scale: 0.2},
   },
   people5: {
-    endTransform: {translateX: -20, translateY: -160, scale: 0.28},
+    endTransform: {translateX: -35, translateY: -155, scale: 0.2},
   },
   people6: {
-    endTransform: {translateX: -78, translateY: -160, scale: 0.28},
+    endTransform: {translateX: -96, translateY: -155, scale: 0.2},
   },
   people7: {
-    endTransform: {translateX: -137, translateY: -160, scale: 0.28},
+    endTransform: {translateX: -156, translateY: -155, scale: 0.2},
   },
   people8: {
-    endTransform: {translateX: -198, translateY: -160, scale: 0.28},
+    endTransform: {translateX: -215, translateY: -155, scale: 0.2},
   }
 }
 

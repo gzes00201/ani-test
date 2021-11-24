@@ -1,5 +1,6 @@
 <div class="rank-map-wapper">
-  <div class="state_doll"></div>
+  <div class="state_doll"
+              [class.is-trun]="light === BBQS_LIGHT.RED"></div>
   <div
     *ngFor="let people of rank"
     class="people-item"

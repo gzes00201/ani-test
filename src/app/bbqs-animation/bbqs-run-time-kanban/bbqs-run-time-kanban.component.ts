@@ -10,6 +10,7 @@ import { BBQS_LIGHT } from '../bbqs-animation-scene/config/bbqs-animation-config
 export class BbqsRunTimeKanbanComponent implements OnInit {
   @Input() runTimeMs: number = 0;
   @Input() light: BBQS_LIGHT = BBQS_LIGHT.GREEN;
+  @Input() isGameOver: boolean = false;
   BBQS_LIGHT = BBQS_LIGHT
   displayRunTimeMs: number = 0;
   constructor() { }

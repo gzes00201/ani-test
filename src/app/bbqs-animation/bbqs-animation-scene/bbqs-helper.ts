@@ -53,9 +53,9 @@ export function BgAnimationConfigFactory(bgConfig: BBQSAnimationPositionConfig, 
   bgConfigKeyframe[4].scale = bgConfigKeyframe[3].scale
   bgConfigKeyframe[5].scale = bgConfigKeyframe[3].scale
 
-  bgConfigKeyframe[6].scale -= 0.4
-  bgConfigKeyframe[7].scale -= 0.3
-  bgConfigKeyframe[8].scale -= 0.2
+  bgConfigKeyframe[6].scale -= 0.3
+  bgConfigKeyframe[7].scale -= 0.2
+  bgConfigKeyframe[8].scale -= 0.1
   bgConfigKeyframe[9].scale -= 0.1
   console.log(bgConfigKeyframe)
   return bgConfigKeyframe
