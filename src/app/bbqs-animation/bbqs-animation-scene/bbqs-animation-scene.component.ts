@@ -45,8 +45,9 @@ export class BbqsAnimationSceneComponent implements OnInit, OnDestroy {
 
   // sound
   doll_1_2_3 = new Sound('assets/audio/doll_1_2_3.mp3');
-  doll_trun = new Sound('assets/audio/doll_trun.mp3');
+  doll_trun = new Sound('assets/audio/doll_trun_v2.mp3');
   bbqs_final = new Sound('assets/audio/bbqs_final.mp3');
+  game_over = new Sound('assets/audio/game_over.mp3');
   constructor() {
     this.initConfig()
    }
@@ -59,6 +60,7 @@ export class BbqsAnimationSceneComponent implements OnInit, OnDestroy {
     this.doll_1_2_3.pause();
     this.doll_trun.pause();
     this.bbqs_final.pause();
+    this.game_over.pause();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -90,10 +92,10 @@ export class BbqsAnimationSceneComponent implements OnInit, OnDestroy {
 
   private handelRunTimeMs(runTimeMs: number) {
     console.log('handelRunTimeMs', runTimeMs)
-    this.handelSound(runTimeMs);
     if(this.isGameOver) {
       return;
     }
+    this.handelSound(runTimeMs);
     this.isLastkeyframes = Math.round(runTimeMs/1000) === 10;
     this.bgAni.tickRunTime(runTimeMs);
     this.handelLightChange(runTimeMs)
@@ -106,14 +108,19 @@ export class BbqsAnimationSceneComponent implements OnInit, OnDestroy {
     if(runTimeMs === 10000){
       console.log('in last')
       timer(1000).subscribe(()=> this.bbqs_final.play()) ;
+      timer(500).subscribe(()=> this.doll_trun.play());
       return;
     }
+    if(runTimeMs+1000 === this.killTimes[0] || runTimeMs === this.killTimes[1]){
+      console.log('in doll_trun')
+      // 紅燈前0.5秒 播放轉頭音效
+      timer(500).subscribe(()=> this.doll_trun.play());
+    }
+
     if(!this.isInited || this.doll_1_2_3.isPlaying || this.runTimeMs === 0  ||this.killTimes.includes(runTimeMs)){
-      if(this.killTimes.includes(runTimeMs) && !this.doll_trun.isPlaying){
-        this.doll_trun.play();
-      }
       return
     }
+
     console.log(runTimeMs)
     if(runTimeMs < this.killTimes[0]){
       // 第一次綠燈
@@ -285,6 +292,10 @@ export class BbqsAnimationSceneComponent implements OnInit, OnDestroy {
   }
 
   private changeGameState(isGameOver: boolean) {
+    if(this.isGameOver === false && isGameOver === true){
+      this.game_over.play();
+    }
+
     this.isGameOver = isGameOver;
     this.onGameStateChange.emit(this.isGameOver);
   }

@@ -36,7 +36,7 @@ export interface BBQSResult {
 export class BbqsAnimationComponent implements OnInit, OnDestroy {
   countDownSec = 5
   runTimeMs = 0
-  result: BBQSResult = {"01":2,"02":4,"03":7,"04":6,"05":1,"06":5,"07":8,"08":3,"09":4}
+  result: BBQSResult = {"01":2,"02":4,"03":7,"04":6,"05":1,"06":5,"07":8,"08":3,"09":8}
   light: BBQS_LIGHT = BBQS_LIGHT.GREEN
   draw_num = '202111110002';
   currentPeopleRank: BBQSPeople[] = [];
